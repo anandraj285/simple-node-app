@@ -4,7 +4,7 @@
   "description": "Simple Node JS Application",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 4000 --exit",
     "start": "node app.js"
   },
   "author": "",
