@@ -1,8 +1,11 @@
 pipeline {
     agent any 
-
+    
     tools {nodejs "node"}
-    def ARTIFACT_NAME="node-app-${env.BUILD_NUMBER}.tgz"
+    environment {
+        ARTIFACT_NAME="node-app-${env.BUILD_NUMBER}.tgz"
+    }
+    
 
     stages {
         stage('build') {
@@ -26,7 +29,7 @@ pipeline {
         }
         stage('artifact-to-s3') {
             steps {                
-                sh label: 'push artefact artefact to s3', script: 'aws s3 cp $ARTIFACT_NAME ss3://bucket-028266843830/dev/$ARTIFACT_NAME'
+                sh label: "push artefact artefact to s3", script: "aws s3 cp $ARTIFACT_NAME ss3://bucket-028266843830/dev/$ARTIFACT_NAME"
             }            
         }
     }
