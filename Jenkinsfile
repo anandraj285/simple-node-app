@@ -2,7 +2,7 @@ pipeline {
     agent any 
 
     tools {nodejs "node"}
-    
+
     stages {
         stage('Build') {
             steps {
@@ -11,7 +11,9 @@ pipeline {
         }
         stage('Test') {
             steps {
+                 echo 'Running npm test'
                 sh 'npm test'
+                echo 'npm test completed'
             }            
         }
     }
