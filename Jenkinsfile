@@ -55,7 +55,7 @@ pipeline {
                 waitUntil {
                     ssm_command_status = sh(returnStdout: true, script: "aws ssm list-commands \
                     --command-id $ssm_command_id \
-                    --region ${REGION} \
+                    --region eu-west-1 \
                     --query 'Commands[0].Status'").trim().replace("\"", "")
                     return !["Pending", "InProgress", "Delayed"].contains(ssm_command_status)
                 }
