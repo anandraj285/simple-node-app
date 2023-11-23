@@ -45,7 +45,7 @@ pipeline {
                 aws ssm send-command \
                 --document-name "AWS-RunRemoteScript" \
                 --document-version "1" \
-                --targets Key=tag:Product,Values=node Key=tag:Environment,Values=test \
+                --targets Key=tag:Name,Values=node.test.node_app.scaled_instance \
                 --parameters '{"sourceType": ["S3"],"sourceInfo": ["{\\\"path\\\":\\\"s3://bucket-028266843830/script/deploy.sh\\\"}"],"commandLine": ["deploy.sh"]}' \
                 --region eu-west-1 \
                 --timeout-seconds 600 --max-concurrency "50" --max-errors "0" \
