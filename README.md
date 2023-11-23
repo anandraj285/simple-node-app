@@ -1,2 +1,2 @@
 # simple-node-app
-Simple Node Applicaiton test
+Simple Node Applicaiton
