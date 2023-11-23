@@ -29,7 +29,7 @@ pipeline {
         }
         stage('artifact-to-s3') {
             steps {                
-                sh label: "push artefact artefact to s3", script: "aws s3 cp $ARTIFACT_NAME s3://bucket-028266843830/dev/$ARTIFACT_NAME"
+                sh label: "push artefact artefact to s3", script: "~/jenkins/jenkins_home/.local/bin/aws s3 cp $ARTIFACT_NAME s3://bucket-028266843830/dev/$ARTIFACT_NAME"
             }            
         }
     }
