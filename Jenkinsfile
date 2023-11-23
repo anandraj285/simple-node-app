@@ -4,7 +4,6 @@ pipeline {
     tools {nodejs "node"}
     environment {
         ARTIFACT_NAME="node-app-${env.BUILD_NUMBER}.tgz"
-        PATH = "${tool 'AWS CLI'}/bin:$PATH"
     }
     
 
