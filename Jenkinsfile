@@ -2,29 +2,30 @@ pipeline {
     agent any 
     
     tools {nodejs "node"}
+
     environment {
-        ARTIFACT_NAME="node-app-${env.BUILD_NUMBER}.zip"
+        ARTIFACT_NAME="simple-node-app-${env.BUILD_NUMBER}.zip"
     }
     
 
     stages {
         stage('build') {
             steps {
-                sh 'npm install'
+                sh label: "Install packages", script: 'npm install'
             }            
         }
         stage('test') {
             steps {
-                 echo 'Running npm test'
-                sh 'npm test'
-                echo 'npm test completed'
+                
+                sh label: "Running NPM test", script: 'npm test'
+              
             }            
         }
          stage('pack') {
             steps {
-                 echo 'Zip the package'
-                sh "zip -r $ARTIFACT_NAME ."
-                echo 'npm pack completed'
+                
+                sh label: "Zip the package", script: "zip -r $ARTIFACT_NAME ."
+                
             }            
         }
         stage('artifact-to-s3') {
@@ -37,11 +38,9 @@ pipeline {
                 }
             }            
         }
-
-
          stage('deploy-to-staging'){
-      steps {
-        script {                
+            steps {
+                script {                
                 ssm_command_id = sh(returnStdout: true, script: """ \
                 aws ssm send-command \
                 --document-name "AWS-RunRemoteScript" \
@@ -66,7 +65,19 @@ pipeline {
                         If script failed on instance ssm logs can be check on instance.
                         Fix the issue and re-trigger the job""")
             }
-      }
+         }
         }
     }
+     post {
+        always {
+            // clean workspace
+            cleanWs()
+        }
+
+         success {
+            // send email
+           script {
+             echo 'success'
+           }
+        }
 }
