@@ -4,6 +4,7 @@ pipeline {
     tools {nodejs "node"}
     environment {
         ARTIFACT_NAME="node-app-${env.BUILD_NUMBER}.tgz"
+        PATH = "${tool 'AWS CLI'}/bin:$PATH"
     }
     
 
@@ -29,7 +30,7 @@ pipeline {
         }
         stage('artifact-to-s3') {
             steps {                
-                sh label: "push artefact artefact to s3", script: "aws s3 cp $ARTIFACT_NAME ss3://bucket-028266843830/dev/$ARTIFACT_NAME"
+                sh label: "push artefact artefact to s3", script: "aws s3 cp $ARTIFACT_NAME s3://bucket-028266843830/dev/$ARTIFACT_NAME"
             }            
         }
     }
