@@ -37,5 +37,36 @@ pipeline {
                 }
             }            
         }
+
+
+         stage('deploy-to-staging'){
+      steps {
+        script {                
+                ssm_command_id = sh(returnStdout: true, script: """ \
+                aws ssm send-command \
+                --document-name "AWS-RunRemoteScript" \
+                --document-version "1" \
+                --targets Key=tag:Product,Values=node Key=tag:Environment,Values=test \
+                --parameters '{"sourceType": ["S3"],"sourceInfo": ["{\\\"path\\\":\\\"s3://bucket-028266843830/script/deploy.sh\\\"}"],"commandLine": ["deploy.sh"]}' \
+                --region ${REGION} \
+                --timeout-seconds 600 --max-concurrency "50" --max-errors "0" \
+                --query "Command.CommandId"
+                """ ).trim()                    
+                waitUntil {
+                    ssm_command_status = sh(returnStdout: true, script: "aws ssm list-commands \
+                    --command-id $ssm_command_id \
+                    --region ${REGION} \
+                    --query 'Commands[0].Status'").trim().replace("\"", "")
+                    return !["Pending", "InProgress", "Delayed"].contains(ssm_command_status)
+                }
+                echo "Got ssm_command_status : $ssm_command_status"
+                if (ssm_command_status != 'Success')
+                    error("""ssm script failed with status $ssm_command_status.
+                        Check the ssm command with id $ssm_command_id.
+                        If script failed on instance ssm logs can be check on instance.
+                        Fix the issue and re-trigger the job""")
+            }
+      }
+        }
     }
 }

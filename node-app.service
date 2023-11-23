@@ -1,0 +1,15 @@
+[Unit]
+Description=node application
+After=syslog.target
+
+[Service]
+User=root
+WorkingDirectory=/home/ec2-user/app/
+ExecStart=node app.js
+SuccessExitStatus=143
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=node-app
+
+[Install]
+WantedBy=multi-user.target
